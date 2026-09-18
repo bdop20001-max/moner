@@ -1,0 +1,36 @@
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/db";
+import { requireMemberSession } from "@/lib/auth-guards";
+
+export async function POST(request: NextRequest) {
+  const guard = await requireMemberSession();
+  if ("error" in guard) return guard.error;
+
+  const body = await request.json().catch(() => null);
+  const memberId = typeof body?.memberId === "string" ? body.memberId : null;
+  if (!memberId || memberId === guard.session.sub) {
+    return NextResponse.json({ error: "অবৈধ অনুরোধ।" }, { status: 400 });
+  }
+
+  const existing = await prisma.like.findUnique({
+    where: { fromId_toId: { fromId: guard.session.sub, toId: memberId } },
+  });
+
+  if (existing) {
+    await prisma.like.delete({ where: { id: existing.id } });
+    return NextResponse.json({ liked: false });
+  }
+
+  await prisma.like.create({
+    data: { fromId: guard.session.sub, toId: memberId },
+  });
+  await prisma.notification.create({
+    data: {
+      memberId,
+      type: "LIKE",
+      body: "আপনার প্রোফাইলে কেউ একজন পছন্দ (like) দিয়েছেন।",
+    },
+  });
+
+  return NextResponse.json({ liked: true });
+}

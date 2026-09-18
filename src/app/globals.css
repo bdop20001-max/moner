@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fdf8f2;
+  --foreground: #2a0e15;
+
+  /* Moner Manush brand palette: deep maroon, rose, warm cream, subtle gold */
+  --color-brand-cream: #fdf8f2;
+  --color-brand-cream-dark: #f3e7d8;
+  --color-brand-maroon: #6b0f2b;
+  --color-brand-maroon-dark: #3f0819;
+  --color-brand-maroon-light: #8c1f3e;
+  --color-brand-rose: #e11d48;
+  --color-brand-rose-light: #fecdd3;
+  --color-brand-gold: #c9a24b;
+  --color-brand-gold-light: #e7cf9a;
+  --color-brand-ink: #2a0e15;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-bengali);
+
+  --color-brand-cream: var(--color-brand-cream);
+  --color-brand-cream-dark: var(--color-brand-cream-dark);
+  --color-brand-maroon: var(--color-brand-maroon);
+  --color-brand-maroon-dark: var(--color-brand-maroon-dark);
+  --color-brand-maroon-light: var(--color-brand-maroon-light);
+  --color-brand-rose: var(--color-brand-rose);
+  --color-brand-rose-light: var(--color-brand-rose-light);
+  --color-brand-gold: var(--color-brand-gold);
+  --color-brand-gold-light: var(--color-brand-gold-light);
+  --color-brand-ink: var(--color-brand-ink);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+::selection {
+  background: var(--color-brand-rose-light);
+  color: var(--color-brand-maroon-dark);
+}

@@ -1,0 +1,293 @@
+// Moner Manush — Prisma schema
+// Production datasource is PostgreSQL. See README.md for setup with
+// PostgreSQL / MySQL / Cloudflare D1.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Admin (company/admin panel users)
+// ---------------------------------------------------------------------------
+
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Member (dating platform users — accounts are created only by admins)
+// ---------------------------------------------------------------------------
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum MemberStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum VerificationStatus {
+  UNVERIFIED
+  PENDING
+  VERIFIED
+}
+
+model Member {
+  id                  String   @id @default(cuid())
+  userId              String   @unique // e.g. MM-10234, issued by admin at creation
+  passwordHash        String
+  mustChangePassword  Boolean  @default(true)
+
+  displayName         String
+  email                String?
+  phone               String?
+  gender              Gender
+  age                 Int
+  district            String
+  profession          String?
+  bio                 String?
+
+  // Deterministic placeholder avatar (no real photo required).
+  avatarSeed          String   @default(cuid())
+  avatarColor         String   @default("rose")
+
+  status              MemberStatus        @default(ACTIVE)
+  verification        VerificationStatus  @default(UNVERIFIED)
+  featured            Boolean             @default(false)
+  isDemo              Boolean             @default(false)
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  photos              MemberPhoto[]
+  memberships         Membership[]
+  wallet              Wallet?
+  transactions        WalletTransaction[]
+
+  likesGiven          Like[]              @relation("likesGiven")
+  likesReceived        Like[]              @relation("likesReceived")
+
+  viewsGiven          ProfileView[]       @relation("viewsGiven")
+  viewsReceived       ProfileView[]       @relation("viewsReceived")
+
+  savedByMe           SavedProfile[]      @relation("savedByMe")
+  savedByOthers       SavedProfile[]      @relation("savedByOthers")
+
+  connectionsSent     ConnectionRequest[] @relation("connSent")
+  connectionsReceived ConnectionRequest[] @relation("connReceived")
+
+  messagesSent        Message[]           @relation("msgSender")
+  messagesReceived    Message[]           @relation("msgReceiver")
+
+  notifications       Notification[]
+
+  reportsFiled        Report[]            @relation("reporter")
+  reportsAgainst       Report[]            @relation("reported")
+
+  @@index([gender, status])
+  @@index([featured])
+}
+
+model MemberPhoto {
+  id        String   @id @default(cuid())
+  memberId  String
+  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  url       String
+  isPrivate Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([memberId])
+}
+
+// ---------------------------------------------------------------------------
+// Membership plans & subscriptions
+// ---------------------------------------------------------------------------
+
+model MembershipPlan {
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  name         String
+  price        Int // BDT
+  durationDays Int
+  chatCredits  Int
+  features     Json // string[]
+  active       Boolean  @default(true)
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  memberships  Membership[]
+}
+
+enum MembershipStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+}
+
+model Membership {
+  id         String            @id @default(cuid())
+  memberId   String
+  member     Member            @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  planId     String
+  plan       MembershipPlan    @relation(fields: [planId], references: [id])
+  startDate  DateTime
+  expiryDate DateTime
+  status     MembershipStatus  @default(ACTIVE)
+  createdAt  DateTime          @default(now())
+
+  @@index([memberId])
+}
+
+// ---------------------------------------------------------------------------
+// Wallet & transactions
+// ---------------------------------------------------------------------------
+
+model Wallet {
+  id          String   @id @default(cuid())
+  memberId    String   @unique
+  member      Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  balance     Int      @default(0) // BDT
+  chatCredits Int      @default(0)
+  updatedAt   DateTime @updatedAt
+}
+
+enum TransactionType {
+  RECHARGE
+  ADMIN_CREDIT
+  ADMIN_DEBIT
+  MEMBERSHIP_PURCHASE
+  CONNECTION_SPEND
+}
+
+model WalletTransaction {
+  id        String          @id @default(cuid())
+  memberId  String
+  member    Member          @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  type      TransactionType
+  amount    Int             @default(0)
+  credits   Int             @default(0)
+  note      String?
+  createdAt DateTime        @default(now())
+
+  @@index([memberId])
+}
+
+// ---------------------------------------------------------------------------
+// Interactions
+// ---------------------------------------------------------------------------
+
+model Like {
+  id        String   @id @default(cuid())
+  fromId    String
+  from      Member   @relation("likesGiven", fields: [fromId], references: [id], onDelete: Cascade)
+  toId      String
+  to        Member   @relation("likesReceived", fields: [toId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([fromId, toId])
+  @@index([toId])
+}
+
+model ProfileView {
+  id        String   @id @default(cuid())
+  viewerId  String
+  viewer    Member   @relation("viewsGiven", fields: [viewerId], references: [id], onDelete: Cascade)
+  viewedId  String
+  viewed    Member   @relation("viewsReceived", fields: [viewedId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([viewedId])
+}
+
+model SavedProfile {
+  id        String   @id @default(cuid())
+  memberId  String
+  member    Member   @relation("savedByMe", fields: [memberId], references: [id], onDelete: Cascade)
+  savedId   String
+  saved     Member   @relation("savedByOthers", fields: [savedId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([memberId, savedId])
+}
+
+enum ConnectionStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+model ConnectionRequest {
+  id        String            @id @default(cuid())
+  fromId    String
+  from      Member            @relation("connSent", fields: [fromId], references: [id], onDelete: Cascade)
+  toId      String
+  to        Member            @relation("connReceived", fields: [toId], references: [id], onDelete: Cascade)
+  status    ConnectionStatus  @default(PENDING)
+  createdAt DateTime          @default(now())
+
+  @@unique([fromId, toId])
+  @@index([toId])
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  senderId   String
+  sender     Member   @relation("msgSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId String
+  receiver   Member   @relation("msgReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  body       String
+  createdAt  DateTime @default(now())
+
+  @@index([senderId, receiverId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  memberId  String
+  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  type      String
+  body      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([memberId])
+}
+
+// ---------------------------------------------------------------------------
+// Trust & safety
+// ---------------------------------------------------------------------------
+
+enum ReportStatus {
+  OPEN
+  REVIEWED
+  RESOLVED
+}
+
+model Report {
+  id         String       @id @default(cuid())
+  reporterId String
+  reporter   Member       @relation("reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  reportedId String
+  reported   Member       @relation("reported", fields: [reportedId], references: [id], onDelete: Cascade)
+  reason     String
+  details    String?
+  status     ReportStatus @default(OPEN)
+  createdAt  DateTime     @default(now())
+
+  @@index([status])
+}
