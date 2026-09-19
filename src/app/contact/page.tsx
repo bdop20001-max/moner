@@ -22,16 +22,28 @@ export default function ContactPage() {
             মেসেজ করুন। আমরা দ্রুত উত্তর দেওয়ার চেষ্টা করি।
           </p>
 
-          <a
-            href={whatsappLink(
-              "আসসালামু আলাইকুম, আমি Moner Manush সম্পর্কে জানতে চাই।",
-            )}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-7 py-3 text-sm font-semibold text-white shadow-md hover:bg-[#1ebe57]"
-          >
-            WhatsApp-এ মেসেজ করুন
-          </a>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <a
+              href={whatsappLink(
+                "আসসালামু আলাইকুম, আমি Moner Manush সম্পর্কে জানতে চাই।",
+              )}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-7 py-3 text-sm font-semibold text-white shadow-md hover:bg-[#1ebe57]"
+            >
+              WhatsApp: +880 1826-785574
+            </a>
+            <a
+              href="mailto:support@monermanush.net"
+              className="inline-flex items-center rounded-full border border-brand-maroon px-7 py-3 text-sm font-semibold text-brand-maroon hover:bg-brand-maroon/5"
+            >
+              support@monermanush.net
+            </a>
+          </div>
+
+          <p className="mt-6 text-sm text-brand-ink/60">
+            ঠিকানা: ধানমন্ডি, ঢাকা ১২০৯, বাংলাদেশ
+          </p>
 
           <p className="mt-10 text-xs text-brand-ink/50">
             নোট: Moner Manush-এ কোনো public Sign Up option নেই। অ্যাকাউন্ট

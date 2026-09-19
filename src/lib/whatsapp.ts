@@ -1,4 +1,4 @@
-const RAW_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "8801XXXXXXXXX";
+const RAW_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "8801826785574";
 
 /** Digits-only WhatsApp number, safe to use in an wa.me link. */
 export function whatsappNumber(): string {

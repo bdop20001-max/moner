@@ -3,7 +3,7 @@ import Link from "next/link";
 export function Footer() {
   return (
     <footer className="mt-16 border-t border-brand-maroon/10 bg-brand-maroon-dark text-brand-cream/90">
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-3">
+      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-4">
         <div>
           <div className="flex items-center gap-2 text-lg font-bold text-brand-cream">
             <span aria-hidden>❤</span> মনের মানুষ
@@ -45,6 +45,28 @@ export function Footer() {
               </Link>
             </li>
           </ul>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-semibold text-brand-gold-light">
+            যোগাযোগ
+          </h3>
+          <address className="mt-3 space-y-2 text-sm not-italic text-brand-cream/70">
+            <p>ধানমন্ডি, ঢাকা ১২০৯, বাংলাদেশ</p>
+            <p>
+              <a href="tel:+8801826785574" className="hover:text-brand-cream">
+                +880 1826-785574
+              </a>
+            </p>
+            <p>
+              <a
+                href="mailto:support@monermanush.net"
+                className="hover:text-brand-cream"
+              >
+                support@monermanush.net
+              </a>
+            </p>
+          </address>
         </div>
 
         <div>
