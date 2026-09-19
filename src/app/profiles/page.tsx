@@ -18,29 +18,23 @@ const PAGE_SIZE = 12;
 export default async function ProfilesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ gender?: string; district?: string; page?: string }>;
+  searchParams: Promise<{ district?: string; page?: string }>;
 }) {
   const params = await searchParams;
-  const gender =
-    params.gender === "MALE" || params.gender === "FEMALE"
-      ? params.gender
-      : undefined;
   const district = params.district || undefined;
   const page = Math.max(1, Number(params.page) || 1);
 
   const [{ profiles, total }, districts] = await Promise.all([
-    getPublicProfiles({ gender, district, page, pageSize: PAGE_SIZE }),
+    getPublicProfiles({ district, page, pageSize: PAGE_SIZE }),
     getDistrictList(),
   ]);
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
-  function buildHref(next: Partial<{ gender: string; district: string; page: number }>) {
+  function buildHref(next: Partial<{ district: string; page: number }>) {
     const sp = new URLSearchParams();
-    const g = next.gender ?? gender ?? "";
     const d = next.district ?? district ?? "";
     const p = next.page ?? page;
-    if (g) sp.set("gender", g);
     if (d) sp.set("district", d);
     if (p && p !== 1) sp.set("page", String(p));
     const qs = sp.toString();
@@ -53,7 +47,7 @@ export default async function ProfilesPage({
       <main className="flex-1">
         <div className="mx-auto max-w-6xl px-4 py-12">
           <h1 className="text-3xl font-extrabold text-brand-maroon-dark">
-            সব প্রোফাইল
+            বাংলাদেশের নারী প্রোফাইল
           </h1>
           <p className="mt-2 text-brand-ink/70">
             সীমিত তথ্য এখানে সবাই দেখতে পারবেন। সম্পূর্ণ প্রোফাইল, ছবি ও
@@ -65,39 +59,8 @@ export default async function ProfilesPage({
           </p>
 
           <div className="mt-6 flex flex-wrap items-center gap-2">
-            <Link
-              href={buildHref({ gender: "", page: 1 })}
-              className={`rounded-full border px-4 py-1.5 text-sm font-medium ${
-                !gender
-                  ? "border-brand-maroon bg-brand-maroon text-brand-cream"
-                  : "border-brand-maroon/30 text-brand-ink/70"
-              }`}
-            >
-              সবাই
-            </Link>
-            <Link
-              href={buildHref({ gender: "FEMALE", page: 1 })}
-              className={`rounded-full border px-4 py-1.5 text-sm font-medium ${
-                gender === "FEMALE"
-                  ? "border-brand-maroon bg-brand-maroon text-brand-cream"
-                  : "border-brand-maroon/30 text-brand-ink/70"
-              }`}
-            >
-              নারী
-            </Link>
-            <Link
-              href={buildHref({ gender: "MALE", page: 1 })}
-              className={`rounded-full border px-4 py-1.5 text-sm font-medium ${
-                gender === "MALE"
-                  ? "border-brand-maroon bg-brand-maroon text-brand-cream"
-                  : "border-brand-maroon/30 text-brand-ink/70"
-              }`}
-            >
-              পুরুষ
-            </Link>
-
             {districts.length > 0 && (
-              <DistrictFilter districts={districts} district={district} gender={gender} />
+              <DistrictFilter districts={districts} district={district} />
             )}
           </div>
 

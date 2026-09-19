@@ -66,15 +66,15 @@ const DEMO_MEMBERS: Array<{
   verification: "UNVERIFIED" | "PENDING" | "VERIFIED";
 }> = [
   { displayName: "নাদিয়া", gender: "FEMALE", age: 26, district: "ঢাকা", profession: "গ্রাফিক ডিজাইনার", bio: "বই পড়তে ও নতুন জায়গা ঘুরতে ভালোবাসি। সৎ ও হাসিখুশি মানুষ খুঁজছি।", featured: true, verification: "VERIFIED" },
-  { displayName: "ফারহান", gender: "MALE", age: 29, district: "ঢাকা", profession: "সফটওয়্যার ইঞ্জিনিয়ার", bio: "শান্ত স্বভাবের, সঙ্গীতপ্রেমী। আন্তরিক সম্পর্কের খোঁজে আছি।", featured: true, verification: "VERIFIED" },
+  { displayName: "মেহজাবিন", gender: "FEMALE", age: 25, district: "চট্টগ্রাম", profession: "স্থপতি", bio: "স্থাপত্য, ভ্রমণ ও সৃজনশীল কাজ ভালোবাসি।", featured: true, verification: "VERIFIED" },
   { displayName: "তানিয়া", gender: "FEMALE", age: 24, district: "চট্টগ্রাম", profession: "শিক্ষিকা", bio: "সহজ-সরল জীবনযাপন পছন্দ করি। ভালো বন্ধুত্ব দিয়ে শুরু করতে চাই।", featured: true, verification: "VERIFIED" },
-  { displayName: "রাফি", gender: "MALE", age: 31, district: "চট্টগ্রাম", profession: "ব্যবসায়ী", bio: "পরিবারকেন্দ্রিক মানুষ, ভ্রমণ করতে ভালোবাসি।", featured: true, verification: "PENDING" },
+  { displayName: "লামিয়া", gender: "FEMALE", age: 29, district: "খুলনা", profession: "উদ্যোক্তা", bio: "নিজের কাজ, বই ও পরিবারকে সময় দিতে ভালোবাসি।", featured: true, verification: "VERIFIED" },
   { displayName: "মিম", gender: "FEMALE", age: 27, district: "সিলেট", profession: "ডাক্তার", bio: "ব্যস্ত জীবনের মাঝেও একজন বোঝাপড়ার মানুষ খুঁজছি।", featured: true, verification: "VERIFIED" },
-  { displayName: "শাকিল", gender: "MALE", age: 28, district: "সিলেট", profession: "সাংবাদিক", bio: "কৌতূহলী মন, নতুন মানুষের সাথে কথা বলতে ভালো লাগে।", featured: true, verification: "UNVERIFIED" },
+  { displayName: "রুমানা", gender: "FEMALE", age: 23, district: "ঢাকা", profession: "স্নাতকোত্তর শিক্ষার্থী", bio: "সিনেমা, কফি ও নতুন কিছু শেখা পছন্দ করি।", featured: true, verification: "VERIFIED" },
   { displayName: "সাদিয়া", gender: "FEMALE", age: 23, district: "রাজশাহী", profession: "শিক্ষার্থী (স্নাতকোত্তর)", bio: "সিনেমা ও কফি পছন্দ করি। বিশ্বস্ত সম্পর্কে বিশ্বাসী।", featured: true, verification: "PENDING" },
-  { displayName: "ইমরান", gender: "MALE", age: 33, district: "খুলনা", profession: "প্রকৌশলী", bio: "স্পষ্টবাদী ও দায়িত্বশীল। দীর্ঘমেয়াদী সম্পর্ক চাই।", featured: true, verification: "VERIFIED" },
-  { displayName: "লামিয়া", gender: "FEMALE", age: 25, district: "বরিশাল", profession: "ফ্রিল্যান্স রাইটার", bio: "লেখালেখি ও ফটোগ্রাফি আমার শখ।", featured: false, verification: "VERIFIED" },
-  { displayName: "তানভীর", gender: "MALE", age: 30, district: "রংপুর", profession: "ব্যাংকার", bio: "খেলাধুলা পছন্দ করি, বিশেষ করে ক্রিকেট।", featured: false, verification: "UNVERIFIED" },
+  { displayName: "নুসরাত", gender: "FEMALE", age: 31, district: "বরিশাল", profession: "ব্যাংকার", bio: "শান্ত বিকেল, ভ্রমণ ও অর্থবহ আলাপ ভালো লাগে।", featured: true, verification: "VERIFIED" },
+  { displayName: "সাবিহা", gender: "FEMALE", age: 25, district: "বরিশাল", profession: "ফ্রিল্যান্স রাইটার", bio: "লেখালেখি ও ফটোগ্রাফি আমার শখ।", featured: false, verification: "VERIFIED" },
+  { displayName: "আফরিন", gender: "FEMALE", age: 30, district: "রংপুর", profession: "প্রভাষক", bio: "বই, গান ও পরিবার নিয়ে সময় কাটাতে ভালোবাসি।", featured: false, verification: "VERIFIED" },
 ];
 
 async function main() {

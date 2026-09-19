@@ -5,17 +5,14 @@ import { useRouter } from "next/navigation";
 export function DistrictFilter({
   districts,
   district,
-  gender,
 }: {
   districts: string[];
   district?: string;
-  gender?: string;
 }) {
   const router = useRouter();
 
   function handleChange(nextDistrict: string) {
     const sp = new URLSearchParams();
-    if (gender) sp.set("gender", gender);
     if (nextDistrict) sp.set("district", nextDistrict);
     const qs = sp.toString();
     router.push(qs ? `/profiles?${qs}` : "/profiles");

@@ -2,9 +2,8 @@ import Link from "next/link";
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-brand-cream to-brand-cream-dark">
-      <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-brand-rose/10 blur-3xl" />
-      <div className="pointer-events-none absolute -left-24 top-40 h-72 w-72 rounded-full bg-brand-gold/20 blur-3xl" />
+    <section className="relative overflow-hidden bg-[url('/images/backgrounds/hero-rooftop.jpg')] bg-cover bg-center">
+      <div className="absolute inset-0 bg-gradient-to-r from-brand-cream/95 via-brand-cream/85 to-brand-cream/40" />
 
       <div className="relative mx-auto flex max-w-6xl flex-col items-center px-4 py-20 text-center md:py-28">
         <span className="rounded-full border border-brand-gold/40 bg-brand-gold/10 px-4 py-1.5 text-xs font-semibold tracking-wide text-brand-maroon-dark">

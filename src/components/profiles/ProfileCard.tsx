@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Avatar } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
 
@@ -10,6 +11,7 @@ export type ProfileCardData = {
   profession?: string | null;
   verification: "UNVERIFIED" | "PENDING" | "VERIFIED";
   avatarColor: string;
+  imageUrl?: string | null;
   isDemo?: boolean;
 };
 
@@ -17,11 +19,21 @@ export function ProfileCard({ profile }: { profile: ProfileCardData }) {
   return (
     <div className="group flex flex-col overflow-hidden rounded-2xl border border-brand-maroon/10 bg-white shadow-sm transition-shadow hover:shadow-lg">
       <div className="relative flex aspect-[4/5] items-center justify-center bg-brand-cream-dark">
-        <Avatar
-          name={profile.displayName}
-          colorKey={profile.avatarColor}
-          size={120}
-        />
+        {profile.imageUrl ? (
+          <Image
+            src={profile.imageUrl}
+            alt={`${profile.displayName}-এর প্রোফাইল ছবি`}
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          />
+        ) : (
+          <Avatar
+            name={profile.displayName}
+            colorKey={profile.avatarColor}
+            size={120}
+          />
+        )}
         <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
           {profile.verification === "VERIFIED" && (
             <Badge tone="green">✓ Verified</Badge>

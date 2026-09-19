@@ -11,17 +11,23 @@ const PROFILE_CARD_SELECT = {
   verification: true,
   avatarColor: true,
   isDemo: true,
+  photos: {
+    where: { isPrivate: false },
+    select: { url: true },
+    orderBy: { sortOrder: "asc" as const },
+    take: 1,
+  },
 } as const;
 
 const DEMO_PROFILES: ProfileCardData[] = [
-  { id: "demo-001", displayName: "নাদিয়া", age: 26, district: "ঢাকা", profession: "গ্রাফিক ডিজাইনার", verification: "VERIFIED", avatarColor: "rose", isDemo: true },
-  { id: "demo-002", displayName: "ফারহান", age: 29, district: "ঢাকা", profession: "সফটওয়্যার ইঞ্জিনিয়ার", verification: "VERIFIED", avatarColor: "blue", isDemo: true },
-  { id: "demo-003", displayName: "তানিয়া", age: 24, district: "চট্টগ্রাম", profession: "শিক্ষিকা", verification: "VERIFIED", avatarColor: "gold", isDemo: true },
-  { id: "demo-004", displayName: "রাফি", age: 31, district: "চট্টগ্রাম", profession: "ব্যবসায়ী", verification: "PENDING", avatarColor: "green", isDemo: true },
-  { id: "demo-005", displayName: "মিম", age: 27, district: "সিলেট", profession: "ডাক্তার", verification: "VERIFIED", avatarColor: "rose", isDemo: true },
-  { id: "demo-006", displayName: "শাকিল", age: 28, district: "সিলেট", profession: "সাংবাদিক", verification: "UNVERIFIED", avatarColor: "blue", isDemo: true },
-  { id: "demo-007", displayName: "সাদিয়া", age: 23, district: "রাজশাহী", profession: "শিক্ষার্থী", verification: "PENDING", avatarColor: "gold", isDemo: true },
-  { id: "demo-008", displayName: "ইমরান", age: 33, district: "খুলনা", profession: "প্রকৌশলী", verification: "VERIFIED", avatarColor: "green", isDemo: true },
+  { id: "demo-001", displayName: "নাদিয়া", age: 26, district: "ঢাকা", profession: "গ্রাফিক ডিজাইনার", verification: "VERIFIED", avatarColor: "rose", imageUrl: "/images/profiles/nadia.jpg", isDemo: true },
+  { id: "demo-002", displayName: "তানিয়া", age: 24, district: "চট্টগ্রাম", profession: "শিক্ষিকা", verification: "VERIFIED", avatarColor: "gold", imageUrl: "/images/profiles/tania.jpg", isDemo: true },
+  { id: "demo-003", displayName: "মিম", age: 28, district: "সিলেট", profession: "ডাক্তার", verification: "VERIFIED", avatarColor: "rose", imageUrl: "/images/profiles/mim.jpg", isDemo: true },
+  { id: "demo-004", displayName: "মেহজাবিন", age: 25, district: "চট্টগ্রাম", profession: "স্থপতি", verification: "VERIFIED", avatarColor: "blue", imageUrl: "/images/profiles/mehjabin.jpg", isDemo: true },
+  { id: "demo-005", displayName: "সাদিয়া", age: 27, district: "রাজশাহী", profession: "সাংবাদিক", verification: "VERIFIED", avatarColor: "gold", imageUrl: "/images/profiles/sadia.jpg", isDemo: true },
+  { id: "demo-006", displayName: "লামিয়া", age: 29, district: "খুলনা", profession: "উদ্যোক্তা", verification: "VERIFIED", avatarColor: "green", imageUrl: "/images/profiles/lamia.jpg", isDemo: true },
+  { id: "demo-007", displayName: "রুমানা", age: 23, district: "ঢাকা", profession: "স্নাতকোত্তর শিক্ষার্থী", verification: "VERIFIED", avatarColor: "rose", imageUrl: "/images/profiles/rumana.jpg", isDemo: true },
+  { id: "demo-008", displayName: "নুসরাত", age: 31, district: "বরিশাল", profession: "ব্যাংকার", verification: "VERIFIED", avatarColor: "green", imageUrl: "/images/profiles/nusrat.jpg", isDemo: true },
 ];
 
 const DEMO_PLANS: PlanCardData[] = [
@@ -32,19 +38,22 @@ const DEMO_PLANS: PlanCardData[] = [
 
 export async function getFeaturedProfiles(limit = 8): Promise<ProfileCardData[]> {
   try {
-    return await prisma.member.findMany({
-      where: { featured: true, status: "ACTIVE" },
+    const profiles = await prisma.member.findMany({
+      where: { featured: true, status: "ACTIVE", gender: "FEMALE" },
       select: PROFILE_CARD_SELECT,
       orderBy: { createdAt: "desc" },
       take: limit,
     });
+    return profiles.map(({ photos, ...profile }) => ({
+      ...profile,
+      imageUrl: photos[0]?.url ?? null,
+    }));
   } catch {
     return DEMO_PROFILES.slice(0, limit);
   }
 }
 
 export async function getPublicProfiles(params: {
-  gender?: "MALE" | "FEMALE";
   district?: string;
   page?: number;
   pageSize?: number;
@@ -54,12 +63,12 @@ export async function getPublicProfiles(params: {
 
   const where = {
     status: "ACTIVE" as const,
-    ...(params.gender ? { gender: params.gender } : {}),
+    gender: "FEMALE" as const,
     ...(params.district ? { district: params.district } : {}),
   };
 
   try {
-    const [profiles, total] = await Promise.all([
+    const [rows, total] = await Promise.all([
       prisma.member.findMany({
         where,
         select: PROFILE_CARD_SELECT,
@@ -69,12 +78,15 @@ export async function getPublicProfiles(params: {
       }),
       prisma.member.count({ where }),
     ]);
+    const profiles = rows.map(({ photos, ...profile }) => ({
+      ...profile,
+      imageUrl: photos[0]?.url ?? null,
+    }));
     return { profiles, total };
   } catch {
     const filtered = DEMO_PROFILES.filter(
       (profile) =>
-        (!params.gender || (params.gender === "FEMALE" ? profile.id === "demo-001" || profile.id === "demo-003" || profile.id === "demo-005" || profile.id === "demo-007" : profile.id === "demo-002" || profile.id === "demo-004" || profile.id === "demo-006" || profile.id === "demo-008")) &&
-        (!params.district || profile.district === params.district),
+        !params.district || profile.district === params.district,
     );
     const start = (page - 1) * pageSize;
     return { profiles: filtered.slice(start, start + pageSize), total: filtered.length };
@@ -103,7 +115,7 @@ export async function getActivePlans(): Promise<PlanCardData[]> {
 export async function getDistrictList(): Promise<string[]> {
   try {
     const rows = await prisma.member.findMany({
-      where: { status: "ACTIVE" },
+      where: { status: "ACTIVE", gender: "FEMALE" },
       select: { district: true },
       distinct: ["district"],
       orderBy: { district: "asc" },
