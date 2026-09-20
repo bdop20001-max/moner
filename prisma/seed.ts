@@ -15,41 +15,50 @@ const prisma = new PrismaClient();
 
 const PLANS = [
   {
-    slug: "basic",
-    name: "Basic Plan",
-    price: 299,
-    durationDays: 30,
-    chatCredits: 20,
+    slug: "free",
+    name: "Free Plan",
+    price: 0,
+    durationDays: 365,
+    chatCredits: 0,
     features: [
-      "সীমিত প্রোফাইল অ্যাক্সেস",
-      "২০টি চ্যাট/কানেকশন ক্রেডিট",
-      "বেসিক সাপোর্ট",
+      "WhatsApp Support Agent-এর সাথে Chat",
+      "Membership সম্পর্কে Basic Assistance",
+      "Account Registration Support",
     ],
     sortOrder: 1,
   },
   {
-    slug: "premium",
-    name: "Premium Plan",
-    price: 599,
-    durationDays: 30,
+    slug: "gold",
+    name: "Gold Plan",
+    price: 999,
+    durationDays: 365,
     chatCredits: 60,
     features: [
-      "বেশি প্রোফাইল অ্যাক্সেস",
-      "৬০টি চ্যাট/কানেকশন ক্রেডিট",
-      "প্রায়োরিটি সাপোর্ট",
+      "Basic Member Profile Access",
+      "Selected Profiles দেখার সুবিধা",
+      "Chat/Connection Credits",
+      "WhatsApp Customer Support",
+      "Match/Connection Assistance",
+      "নতুন Profile Recommendation",
+      "Free Plan-এর সব সুবিধা",
     ],
     sortOrder: 2,
   },
   {
     slug: "vip",
     name: "VIP Plan",
-    price: 999,
-    durationDays: 30,
+    price: 1599,
+    durationDays: 365,
     chatCredits: 150,
     features: [
-      "সর্বোচ্চ প্রোফাইল অ্যাক্সেস",
-      "১৫০টি চ্যাট/কানেকশন ক্রেডিট (higher wallet credits)",
-      "VIP কাস্টমার সাপোর্ট",
+      "Maximum Profile Access",
+      "Higher Chat/Connection Limit",
+      "Priority Match Recommendations",
+      "Priority WhatsApp Support",
+      "VIP Customer Assistance",
+      "Premium Profile Suggestions",
+      "Priority Connection Requests",
+      "Gold Plan-এর সব সুবিধা",
     ],
     sortOrder: 3,
   },
@@ -119,7 +128,7 @@ async function main() {
   }
   console.log(`Seeded ${PLANS.length} membership plans.`);
 
-  const premiumPlan = await prisma.membershipPlan.findUniqueOrThrow({ where: { slug: "premium" } });
+  const premiumPlan = await prisma.membershipPlan.findUniqueOrThrow({ where: { slug: "gold" } });
 
   let created = 0;
   for (const [index, demo] of DEMO_MEMBERS.entries()) {

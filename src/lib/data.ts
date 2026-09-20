@@ -31,9 +31,9 @@ const DEMO_PROFILES: ProfileCardData[] = [
 ];
 
 const DEMO_PLANS: PlanCardData[] = [
-  { id: "plan-basic", name: "Basic Plan", price: 299, durationDays: 30, chatCredits: 20, features: ["সীমিত প্রোফাইল অ্যাক্সেস", "২০টি চ্যাট/কানেকশন ক্রেডিট", "বেসিক সাপোর্ট"] },
-  { id: "plan-premium", name: "Premium Plan", price: 599, durationDays: 30, chatCredits: 60, features: ["বেশি প্রোফাইল অ্যাক্সেস", "৬০টি চ্যাট/কানেকশন ক্রেডিট", "প্রায়োরিটি সাপোর্ট"] },
-  { id: "plan-vip", name: "VIP Plan", price: 999, durationDays: 30, chatCredits: 150, features: ["সর্বোচ্চ প্রোফাইল অ্যাক্সেস", "১৫০টি চ্যাট/কানেকশন ক্রেডিট", "VIP কাস্টমার সাপোর্ট"] },
+  { id: "plan-free", name: "Free Plan", price: 0, durationDays: 365, chatCredits: 0, features: ["WhatsApp Support Agent-এর সাথে Chat", "Membership সম্পর্কে Basic Assistance", "Account Registration Support"] },
+  { id: "plan-gold", name: "Gold Plan", price: 999, durationDays: 365, chatCredits: 60, features: ["Basic Member Profile Access", "Selected Profiles দেখার সুবিধা", "Chat/Connection Credits", "WhatsApp Customer Support", "Match/Connection Assistance", "নতুন Profile Recommendation", "Free Plan-এর সব সুবিধা"] },
+  { id: "plan-vip", name: "VIP Plan", price: 1599, durationDays: 365, chatCredits: 150, features: ["Maximum Profile Access", "Higher Chat/Connection Limit", "Priority Match Recommendations", "Priority WhatsApp Support", "VIP Customer Assistance", "Premium Profile Suggestions", "Priority Connection Requests", "Gold Plan-এর সব সুবিধা"] },
 ];
 
 export async function getFeaturedProfiles(limit = 8): Promise<ProfileCardData[]> {
