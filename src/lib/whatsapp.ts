@@ -22,3 +22,15 @@ export function supportWhatsappLink(): string {
     "আসসালামু আলাইকুম, আমার Moner Manush অ্যাকাউন্ট নিয়ে সহায়তা দরকার।",
   );
 }
+
+export function profileInterestWhatsappLink(profileName: string): string {
+  return whatsappLink(
+    `আসসালামু আলাইকুম, আমি Moner Manush-এ ${profileName}-এর প্রোফাইলটি সম্পর্কে জানতে এবং Membership নিতে চাই।`,
+  );
+}
+
+export function moreProfilesWhatsappLink(): string {
+  return whatsappLink(
+    "আসসালামু আলাইকুম, আমি আরও প্রোফাইল দেখতে Moner Manush Membership নিতে চাই।",
+  );
+}

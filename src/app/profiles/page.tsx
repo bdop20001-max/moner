@@ -5,6 +5,8 @@ import { ProfileCard } from "@/components/profiles/ProfileCard";
 import { DistrictFilter } from "@/components/profiles/DistrictFilter";
 import { getDistrictList, getPublicProfiles } from "@/lib/data";
 import Link from "next/link";
+import { freeProfileLimit, getMembershipAccess } from "@/lib/membership-access";
+import { moreProfilesWhatsappLink } from "@/lib/whatsapp";
 
 export const dynamic = "force-dynamic";
 
@@ -22,14 +24,17 @@ export default async function ProfilesPage({
 }) {
   const params = await searchParams;
   const district = params.district || undefined;
-  const page = Math.max(1, Number(params.page) || 1);
+  const access = await getMembershipAccess();
+  const canViewFullProfiles = access.hasActiveMembership;
+  const page = canViewFullProfiles ? Math.max(1, Number(params.page) || 1) : 1;
+  const pageSize = canViewFullProfiles ? PAGE_SIZE : freeProfileLimit();
 
   const [{ profiles, total }, districts] = await Promise.all([
-    getPublicProfiles({ district, page, pageSize: PAGE_SIZE }),
+    getPublicProfiles({ district, page, pageSize }),
     getDistrictList(),
   ]);
 
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   function buildHref(next: Partial<{ district: string; page: number }>) {
     const sp = new URLSearchParams();
@@ -50,12 +55,9 @@ export default async function ProfilesPage({
             বাংলাদেশের নারী প্রোফাইল
           </h1>
           <p className="mt-2 text-brand-ink/70">
-            সীমিত তথ্য এখানে সবাই দেখতে পারবেন। সম্পূর্ণ প্রোফাইল, ছবি ও
-            যোগাযোগের তথ্য দেখতে{" "}
-            <Link href="/login" className="font-semibold text-brand-maroon underline">
-              লগইন
-            </Link>{" "}
-            করুন।
+            {canViewFullProfiles
+              ? "আপনার সক্রিয় Membership দিয়ে সম্পূর্ণ প্রোফাইল তালিকা দেখুন।"
+              : `Membership ছাড়াই সর্বোচ্চ ${pageSize}টি প্রোফাইল preview দেখুন। সম্পূর্ণ access পেতে WhatsApp-এ যোগাযোগ করুন।`}
           </p>
 
           <div className="mt-6 flex flex-wrap items-center gap-2">
@@ -71,12 +73,12 @@ export default async function ProfilesPage({
           ) : (
             <div className="mt-8 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
               {profiles.map((profile) => (
-                <ProfileCard key={profile.id} profile={profile} />
+                <ProfileCard key={profile.id} profile={profile} canViewFullProfile={canViewFullProfiles} />
               ))}
             </div>
           )}
 
-          {totalPages > 1 && (
+          {canViewFullProfiles && totalPages > 1 && (
             <div className="mt-10 flex justify-center gap-2">
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
                 <Link
@@ -91,6 +93,22 @@ export default async function ProfilesPage({
                   {p}
                 </Link>
               ))}
+            </div>
+          )}
+
+          {!canViewFullProfiles && (
+            <div className="mt-10 text-center">
+              <a
+                href={moreProfilesWhatsappLink()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center rounded-full bg-[#25D366] px-7 py-3 text-sm font-bold text-white shadow-md transition-colors hover:bg-[#1fbd5a]"
+              >
+                WhatsApp-এ আরও প্রোফাইল দেখুন
+              </a>
+              <p className="mt-3 text-sm text-brand-ink/60">
+                সক্রিয় Membership নিলে সম্পূর্ণ profile list ও profile details দেখতে পারবেন।
+              </p>
             </div>
           )}
         </div>

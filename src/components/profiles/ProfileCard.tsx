@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Avatar } from "@/components/ui/Avatar";
 import { Badge } from "@/components/ui/Badge";
+import { profileInterestWhatsappLink } from "@/lib/whatsapp";
 
 export type ProfileCardData = {
   id: string;
@@ -15,7 +16,13 @@ export type ProfileCardData = {
   isDemo?: boolean;
 };
 
-export function ProfileCard({ profile }: { profile: ProfileCardData }) {
+export function ProfileCard({
+  profile,
+  canViewFullProfile = false,
+}: {
+  profile: ProfileCardData;
+  canViewFullProfile?: boolean;
+}) {
   return (
     <div className="group flex flex-col overflow-hidden rounded-2xl border border-brand-maroon/10 bg-white shadow-sm transition-shadow hover:shadow-lg">
       <div className="relative flex aspect-[4/5] items-center justify-center bg-brand-cream-dark">
@@ -59,12 +66,23 @@ export function ProfileCard({ profile }: { profile: ProfileCardData }) {
           </p>
         )}
 
-        <Link
-          href={`/profiles/${profile.id}`}
-          className="mt-3 inline-flex items-center justify-center rounded-full border border-brand-maroon px-4 py-2 text-sm font-semibold text-brand-maroon transition-colors hover:bg-brand-maroon hover:text-brand-cream"
-        >
-          প্রোফাইল দেখুন
-        </Link>
+        {canViewFullProfile ? (
+          <Link
+            href={`/profiles/${profile.id}`}
+            className="mt-3 inline-flex items-center justify-center rounded-full border border-brand-maroon px-4 py-2 text-sm font-semibold text-brand-maroon transition-colors hover:bg-brand-maroon hover:text-brand-cream"
+          >
+            প্রোফাইল দেখুন
+          </Link>
+        ) : (
+          <a
+            href={profileInterestWhatsappLink(profile.displayName)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-flex items-center justify-center rounded-full border border-brand-maroon px-4 py-2 text-sm font-semibold text-brand-maroon transition-colors hover:bg-brand-maroon hover:text-brand-cream"
+          >
+            প্রোফাইল দেখুন
+          </a>
+        )}
       </div>
     </div>
   );

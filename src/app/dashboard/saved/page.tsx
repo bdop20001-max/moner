@@ -1,11 +1,14 @@
-import { getSession } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { ProfileCard } from "@/components/profiles/ProfileCard";
+import { getMembershipAccess } from "@/lib/membership-access";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 export default async function SavedProfilesPage() {
-  const session = await getSession();
+  const access = await getMembershipAccess();
+  if (!access.hasActiveMembership || !access.session) redirect("/membership");
+  const session = access.session;
 
   const saved = await prisma.savedProfile.findMany({
     where: { memberId: session!.sub },
@@ -35,7 +38,7 @@ export default async function SavedProfilesPage() {
       ) : (
         <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
           {saved.map((s) => (
-            <ProfileCard key={s.id} profile={s.saved} />
+            <ProfileCard key={s.id} profile={s.saved} canViewFullProfile />
           ))}
         </div>
       )}

@@ -1,7 +1,14 @@
 import Link from "next/link";
 import { ProfileCard, type ProfileCardData } from "@/components/profiles/ProfileCard";
+import { moreProfilesWhatsappLink } from "@/lib/whatsapp";
 
-export function FeaturedProfiles({ profiles }: { profiles: ProfileCardData[] }) {
+export function FeaturedProfiles({
+  profiles,
+  canViewFullProfiles,
+}: {
+  profiles: ProfileCardData[];
+  canViewFullProfiles: boolean;
+}) {
   return (
     <section id="featured-profiles" className="mx-auto max-w-6xl px-4 py-16">
       <div className="mb-10 text-center">
@@ -20,18 +27,21 @@ export function FeaturedProfiles({ profiles }: { profiles: ProfileCardData[] }) 
       ) : (
         <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
           {profiles.map((profile) => (
-            <ProfileCard key={profile.id} profile={profile} />
+            <ProfileCard key={profile.id} profile={profile} canViewFullProfile={canViewFullProfiles} />
           ))}
         </div>
       )}
 
       <div className="mt-10 text-center">
-        <Link
-          href="/profiles"
-          className="inline-flex items-center justify-center rounded-full border border-brand-maroon px-6 py-2.5 text-sm font-semibold text-brand-maroon hover:bg-brand-maroon/5"
-        >
-          সব প্রোফাইল দেখুন
-        </Link>
+        {canViewFullProfiles ? (
+          <Link href="/profiles" className="inline-flex items-center justify-center rounded-full border border-brand-maroon px-6 py-2.5 text-sm font-semibold text-brand-maroon hover:bg-brand-maroon/5">
+            আরও প্রোফাইল দেখুন
+          </Link>
+        ) : (
+          <a href={moreProfilesWhatsappLink()} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-full bg-[#25D366] px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#1fbd5a]">
+            WhatsApp-এ আরও প্রোফাইল দেখুন
+          </a>
+        )}
       </div>
     </section>
   );

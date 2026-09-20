@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { requireMemberSession } from "@/lib/auth-guards";
+import { requireActiveMemberSession } from "@/lib/auth-guards";
 
 export async function POST(request: NextRequest) {
-  const guard = await requireMemberSession();
+  const guard = await requireActiveMemberSession();
   if ("error" in guard) return guard.error;
 
   const body = await request.json().catch(() => null);

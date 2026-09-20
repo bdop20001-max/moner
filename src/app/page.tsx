@@ -6,13 +6,15 @@ import { MembershipPlans } from "@/components/landing/MembershipPlans";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { SafetySection } from "@/components/landing/SafetySection";
 import { getActivePlans, getFeaturedProfiles } from "@/lib/data";
+import { getMembershipAccess } from "@/lib/membership-access";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [profiles, plans] = await Promise.all([
+  const [profiles, plans, access] = await Promise.all([
     getFeaturedProfiles(8),
     getActivePlans(),
+    getMembershipAccess(),
   ]);
 
   return (
@@ -20,7 +22,7 @@ export default async function HomePage() {
       <Navbar />
       <main className="flex-1">
         <Hero />
-        <FeaturedProfiles profiles={profiles} />
+        <FeaturedProfiles profiles={profiles} canViewFullProfiles={access.hasActiveMembership} />
         <MembershipPlans plans={plans} />
         <HowItWorks />
         <SafetySection />
