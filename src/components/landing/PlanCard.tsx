@@ -65,7 +65,7 @@ export function PlanCard({ plan }: { plan: PlanCardData }) {
           {plan.name}
         </p>
         <div className="mt-3 flex items-end gap-2">
-          <span className="text-4xl font-black tracking-tight">₹{plan.price.toLocaleString("en-IN")}</span>
+          <span className="text-4xl font-black tracking-tight">৳{plan.price.toLocaleString("en-BD")}</span>
           <span className={`pb-1 text-sm ${isDark ? "text-brand-cream/70" : "text-brand-ink/55"}`}>/ Year</span>
         </div>
         <p className={`mt-4 min-h-12 text-sm leading-6 ${isDark ? "text-brand-cream/75" : "text-brand-ink/65"}`}>
